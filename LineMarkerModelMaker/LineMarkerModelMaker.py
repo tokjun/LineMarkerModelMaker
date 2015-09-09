@@ -74,7 +74,7 @@ class LineMarkerModelMakerWidget:
     # Target point (vtkMRMLMarkupsFiducialNode)
     #
     self.SourceSelector = slicer.qMRMLNodeComboBox()
-    self.SourceSelector.nodeTypes = ( ("vtkMRMLLinearTransformNode"), "" )
+    self.SourceSelector.nodeTypes = ( ("vtkMRMLMarkupsFiducialNode"), "" )
     self.SourceSelector.addEnabled = False
     self.SourceSelector.removeEnabled = False
     self.SourceSelector.noneEnabled = True
@@ -168,7 +168,7 @@ class LineMarkerModelMakerWidget:
       trans1 = vtk.vtkTransform()
       trans1.RotateX(90.0)
       trans1.Update()
-      tfilter1.SetInput(cylinder.GetOutput())
+      tfilter1.SetInputConnection(cylinder.GetOutputPort())
       tfilter1.SetTransform(trans1)
       tfilter1.Update()
       
@@ -185,11 +185,11 @@ class LineMarkerModelMakerWidget:
 
       trans2.RotateWXYZ(angle, norm[0], norm[1], norm[2])
       trans2.Update()
-      tfilter2.SetInput(tfilter1.GetOutput())
+      tfilter2.SetInputConnection(tfilter1.GetOutputPort())
       tfilter2.SetTransform(trans2)
       tfilter2.Update()
 
-      apd.AddInput(tfilter2.GetOutput())
+      apd.AddInputConnection(tfilter2.GetOutputPort())
 
     apd.Update()
     zframeModel.SetAndObservePolyData(apd.GetOutput())
